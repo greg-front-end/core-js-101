@@ -136,18 +136,23 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-//   if (rect1.x === rect2.x || rect1.y === rect2.y) {
-//     return false;
-//   }
-//   if (rect1.x > rect2.x || rect1.y > rect2.y) {
-//     return false;
-//   }
-//   if (rect1.y > rect2.y || rect1.x > rect2.x) {
-//     return false;
-//   }
-//   return true;
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  let XColl = false;
+  let YColl = false;
+  const leftTop = (rect1.left + rect1.width >= rect2.top);
+  const leftWidth = (rect1.left <= rect2.left + rect2.width);
+  const topHeightLeft = (rect1.top + rect1.height >= rect2.left);
+  const topHeight = (rect1.top <= rect2.top + rect2.height);
+  if (leftTop && leftWidth) {
+    XColl = true;
+  }
+  if (topHeightLeft && topHeight) {
+    YColl = true;
+  }
+  if (XColl && YColl) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -457,8 +462,19 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const colLength = m2[0].length;
+  const resArr = [];
+  let curVal = 0;
+  for (let i = 0; i < m1.length; i += 1) {
+    const curRowRes = [];
+    for (let k = 0; k < colLength; k += 1) {
+      curVal = m1[i].reduce((sum, item, idx) => sum + (item * m2[idx][k]), 0);
+      curRowRes.push(curVal);
+    }
+    resArr.push(curRowRes);
+  }
+  return resArr;
 }
 
 
@@ -492,8 +508,42 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const fillEmptySpots = position
+    .map((elem) => Array.from(elem, (item) => {
+      if (elem.length < 3) {
+        elem.push(null);
+      }
+      if (item) {
+        return item;
+      }
+      return null;
+    }));
+
+  const winnerTable = [
+    // Vertical
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    // Horizontal
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    // Diagonal
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  let res;
+  for (let i = 0; i < winnerTable.length; i += 1) {
+    const winRow = winnerTable[i];
+    if ((winRow.every((idx) => fillEmptySpots.flat()[idx] === 'X'))) {
+      res = 'X';
+    }
+    if ((winRow.every((idx) => fillEmptySpots.flat()[idx] === '0'))) {
+      res = '0';
+    }
+  }
+  return res;
 }
 
 
